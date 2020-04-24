@@ -17,9 +17,6 @@
 export default {
   name: "Card",
   props: ["cardText", "cardType", "cardId", "shadow"],
-  created() {
-    console.log('shadow', this.shadow);
-  },
   computed: {
     cardClass() {
       const classes = {

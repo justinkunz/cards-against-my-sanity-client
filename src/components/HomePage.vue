@@ -1,6 +1,6 @@
 <template>
   <div>
-    <sweet-modal ref="joinOrStart">
+    <sweet-modal ref="joinOrStart" blocking hide-close-button>
       <div class="app-title">
         Cards Against My Sanity
       </div>
@@ -21,7 +21,7 @@
       </div>
     </sweet-modal>
 
-    <sweet-modal ref="gameOptions">
+    <sweet-modal ref="gameOptions" blocking hide-close-button>
       <div class="app-title">
         Cards Against My Sanity
       </div>
@@ -55,7 +55,7 @@
       >
     </sweet-modal>
 
-    <sweet-modal ref="joinGame">
+    <sweet-modal ref="joinGame" blocking hide-close-button>
       <md-field md-inline class="game-code-input">
         <label>Game Code</label>
         <md-input v-model="form.gameCode"></md-input>
@@ -90,11 +90,12 @@ export default {
   },
   methods: {
     async launchGame() {
-      console.log(this.options);
       const gameId = await this.$store.dispatch("createGame", this.options);
       this.$router.push(`/g/${gameId}`);
     },
     getGameOptions() {
+      let container = this.$refs.container
+    this.$copyText("Text to copy", container)
       this.$refs.joinOrStart.close();
       this.$refs.gameOptions.open();
     },

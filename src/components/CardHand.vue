@@ -4,11 +4,19 @@
     <div v-if="submittedCard || !hasStarted" class="post-submit-msg">
         <div v-if="!hasStarted" class='prestart-wrapper'>
             <div class="prestart-instructions">
-                Share this link with your friends to invite them to your game.
+                Share 
+                <span @click="copyGameLink">  
+                    <span class="game-link copy">this link</span>
+                    <md-tooltip md-direction="top">{{linkCopyTooltip}}</md-tooltip>
+                </span>
+                 with your friends to invite them to your game.
             </div>
             <div class="game-code">
             People can also join by entering the Game Code at cardsagainstmysanity.com Your game code is
-            <span class="game-code-text">{{gameCode}}</span>               
+             <span @click="copyGameCode">  
+                <span class="game-code-text copy">{{gameCode}}</span>  
+                <md-tooltip md-direction="bottom">{{codeCopyTooltip}}</md-tooltip>
+            </span>             
             </div>
         </div>
     </div>
@@ -25,22 +33,55 @@ export default {
     components: {
         CardSet
     },
+    data() {
+        return {
+            copied: {
+                link: false,
+                code: false
+            }
+        }
+    },
     computed: {
         ...mapState(['hand', 'submittedCard', 'hasStarted']),
         gameCode() {
             return this.$route.params.gameId.substring(1);
+        },
+        linkCopyTooltip() {
+            return this.copied.link ? "Copied to clipboard!" : "Copy your game link to your clipboard";
+        },
+        codeCopyTooltip() {
+            return this.copied.code ? "Copied to clipboard!" : "Copy your game code to your clipboard";
         }
     },
     methods: {
         handleClick(cardId) {
             const { gameId } = this.$route.params;
             this.$store.dispatch('submitCard', { cardId, gameId });
+        },
+        copyGameLink() {
+            const { gameId } = this.$route.params;
+            this.$copyText(`https://www.cardsagainstmysanity.com/g/${gameId}`, this.$refs.container);
+            this.copied.link = true;
+        },
+        copyGameCode() {
+            this.$copyText(this.gameCode, this.$refs.container);
+            this.copied.code = true;
         }
+
     },
 }
 </script>
 
 <style scoped>
+
+.game-link {
+    color: #d53c3c;
+}
+
+.copy:hover {
+    cursor: pointer;
+}
+
 .deck {
     position: fixed;
     bottom: -30px;
@@ -67,9 +108,9 @@ export default {
 }
 
 .game-code-text {
-    font-weight: 900;
-    font-size: 20px;
+    font-size: 24px;
     margin-left: 0.25em;
+    color: #d53d3c;
 }
 
 </style>

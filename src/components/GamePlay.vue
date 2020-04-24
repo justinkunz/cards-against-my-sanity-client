@@ -1,6 +1,6 @@
 <template>
   <div class="current-game">
-    <sweet-modal ref="captureName">
+    <sweet-modal ref="captureName" blocking hide-close-button>
       <md-field md-inline class="player-name-input">
         <label>Enter your name</label>
         <md-input v-model="form.name"></md-input>
@@ -16,8 +16,16 @@
     <div class="current-card">
       <Winner v-if="isGameOver" />
       <Card v-else cardType="black" :cardText="blackCard.text" />
+      <div v-if="isVIP && hasStarted && !round.ready" @click="skipBlackCard()">
+        <div class="skip-card">
+          Skip Card
+        </div>
+        <md-tooltip md-direction="bottom">As the game's VIP, you can skip black cards</md-tooltip>
+      </div>
     </div>
+
     <Submission />
+
     <Cardzar v-if="me.isCardzar" />
     <CardHand v-else />
   </div>
@@ -52,27 +60,24 @@ export default {
     };
   },
   computed: {
-    ...mapState(["submittedCard", "blackCard", "me", "round", "playerId", "isGameOver"]),
+    ...mapState(["submittedCard", "blackCard", "me", "round", "playerId", "isGameOver", "isVIP", "hasStarted"]),
 
   },
   async mounted() {
-    console.log(this.$route);
     const { gameId } = this.$route.params;
     this.trackFirebase(gameId);
-    const playerId = localStorage.getItem(`p-${gameId}`);
-    console.log({playerId})
-    if (!playerId) {
+    const jwtToken = localStorage.getItem(`p-${gameId}`);
+    if (!jwtToken) {
       this.$refs.captureName.open();
     } else {
-      this.$store.dispatch("getPlayerInfo", { playerId, gameId });
-      console.log("adding");
+      this.$store.dispatch("getPlayerInfo", { gameId });
     }
   },
   updated() {
     const { gameId } = this.$route.params;
-    const playerId = localStorage.getItem(`p-${gameId}`);
+    const jwtToken = localStorage.getItem(`p-${gameId}`);
 
-    if (playerId) {
+    if (jwtToken) {
       this.$refs.captureName.close();
     }
   },
@@ -81,12 +86,11 @@ export default {
       const gameRef = db.ref(`games/${gameId}`);
       gameRef.on("value", (snapshot) => {
         const game = snapshot.val();
-        console.log("=====UPDATE FROM FIREBASE====", game);
         if (game) {
           if(game.blackCard.text !== this.blackCard.text) {
-            const playerId = localStorage.getItem(`p-${gameId}`)
-            if(playerId){
-              this.$store.dispatch('getPlayerInfo', { gameId, playerId });
+            const jwtToken = localStorage.getItem(`p-${gameId}`)
+            if(jwtToken){
+              this.$store.dispatch('getPlayerInfo', { gameId });
             }
           }
           this.$store.commit("updateGame", { game, gameId });
@@ -94,10 +98,18 @@ export default {
         }
       });
     },
-    addPlayer() {
+    skipBlackCard() {
+      const { gameId } = this.$route.params;
+      this.$store.dispatch('skipBlackCard', gameId)
+    },
+    async addPlayer() {
+      try {
       const { gameId } = this.$route.params;
        this.$refs.captureName.close();
-       this.$store.dispatch("addPlayer", { gameId, name: this.form.name });
+       await this.$store.dispatch("addPlayer", { gameId, name: this.form.name });
+      } catch(err) {
+        this.$router.push('/');
+      }
     },
   },
 };
@@ -106,6 +118,21 @@ export default {
 <style scoped>
 .add-player-btn {
   margin-top: 2em;
+}
+
+.skip-card {
+  background: #79bece;
+  width: 70%;
+  margin: 0 auto;
+  text-align: center;
+  font-family: sans-serif;
+  padding: 0.25em 0;
+  border-radius: 0 0 6px 6px;
+  font-size: 16px;
+  font-weight: 900;
+}
+.skip-card:hover {
+  cursor: pointer;
 }
 
 .player-name-input {

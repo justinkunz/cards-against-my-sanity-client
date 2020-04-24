@@ -41,7 +41,6 @@ export default {
   },
   methods: {
     handleClick(cardId) {
-      console.log(cardId, "won");
       const { gameId } = this.$route.params;
       this.$store.dispatch("selectRoundWinner", { cardId, gameId });
     },

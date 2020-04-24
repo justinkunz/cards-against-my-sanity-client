@@ -20,9 +20,7 @@ export default {
     },
     methods: {
       playAgain() {
-        console.log('playing again');
         const { gameId } = this.$route.params;
-        console.log(gameId);
         this.$store.dispatch('resetGame', gameId)
       }
     },

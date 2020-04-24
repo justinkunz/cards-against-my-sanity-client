@@ -38,8 +38,6 @@ export default {
             const { handleClick } = this;
             if(handleClick && typeof handleClick === "function") {
                 handleClick(id);
-            } else {
-                console.log('no click handler')
             }
         }
     }
@@ -60,17 +58,14 @@ export default {
     .cardContainer:hover {
         top: -55px;
         position: relative;
+        cursor: pointer
     }
 
     .cardzar-outerbox:hover {
         top: -20px;
         position: relative;
+        cursor: pointer
     }
-
-    
-   /* ::v-deep  .card {
-        box-shadow: 4px 5px #3F51B5
-    } */
 
     .cardContainer:hover >
     .selectContainer {

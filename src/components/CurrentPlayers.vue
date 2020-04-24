@@ -14,16 +14,12 @@
           </md-list-item>
         </md-list>
       </md-card-content>
-
-      <div class="btn-container" v-if="!hasStarted && formattedPlayers.length >= 3 && isVIP">
-        <md-button class="md-dense md-raised md-primary" @click="beginGame">Start Game</md-button>
+      <div class="btn-container" v-if="!hasStarted && players.length >= 3 && isVIP">
+        <md-button class="md-dense md-raised md-primary" @click="beginGame()">Start Game</md-button>
       </div>
       <div class="btn-container" v-else-if="!hasStarted && isVIP">
          <md-button class="md-raised" disabled>Start Game</md-button>
          <md-tooltip md-direction="bottom">Must have a minimum of 3 players</md-tooltip>
-      </div>
-      <div class="btn-container" v-else-if="round.isComplete && me.isCardzar" >
-        <md-button class="md-dense md-raised md-primary" @click="nextRound">Next Round</md-button>
       </div>
     </md-ripple>
   </md-card>
@@ -33,11 +29,6 @@
 import { mapState } from "vuex";
 export default {
   name: "CurrentPlayers",
-  updated() {
-    console.log("updated");
-    console.log(this.$store.state);
-    console.log(this.players);
-  },
   computed: {
     ...mapState(["players", "hasStarted", "round", "isVIP", "me"]),
     formattedPlayers() {
@@ -67,11 +58,7 @@ export default {
     beginGame() {
       this.$store.dispatch("beginGame", this.$route.params.gameId);
     },
-    nextRound() {
-      this.$store.dispatch("nextRound", this.$route.params.gameId);
-    },
     determineWrapperClass(player) {
-      console.log('DWC', player, this.round)
       if(player.isCardzar) return 'cardzar';
       if(this.round.winner && player.name === this.round.winner.name) return 'winner';
       return '';
