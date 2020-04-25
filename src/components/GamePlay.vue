@@ -3,7 +3,7 @@
     <sweet-modal ref="captureName" blocking hide-close-button>
       <md-field md-inline class="player-name-input">
         <label>Enter your name</label>
-        <md-input v-model="form.name"></md-input>
+        <md-input v-model="form.name" maxlength="18"></md-input>
       </md-field>
       <md-button
         class="md-raised md-primary add-player-btn"

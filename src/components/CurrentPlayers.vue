@@ -35,9 +35,11 @@ export default {
         let colorNum = 1;
       return this.players.map(player => {
         const { name, score, isCardzar } = player;
-        const initials = name
-          .split(" ")
-          .slice(0, 2)
+        const words = name
+          .split(" ");
+          const initials = words.length === 1 ? 
+          name[0].toUpperCase() + name[1].toLowerCase() 
+          : words.slice(0, 2)
           .map(i => i[0])
           .join("")
           .toUpperCase();
@@ -73,6 +75,10 @@ export default {
   left: 0;
   min-width: 250px;
   padding: 10px 0;
+}
+
+.md-list-item-text {
+  margin-right: 0.5em;
 }
 .score {
   font-weight: 600;
