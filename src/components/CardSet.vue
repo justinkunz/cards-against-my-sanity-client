@@ -52,33 +52,44 @@ export default {
     }
 
     .selectContainer {
-        display:none;
-    }
-
-    .cardContainer:hover {
-        top: -55px;
+        visibility: hidden;
         position: relative;
-        cursor: pointer
-    }
-
-    .cardzar-outerbox:hover {
-        top: -20px;
-        position: relative;
-        cursor: pointer
-    }
-
-    .cardContainer:hover >
-    .selectContainer {
-        background: #fe80ab;
         width: 80%;
-        display: inline-block;
         margin: 0 10%;
         text-align: center;
         font-family: sans-serif;
         padding: 0.5em 0;
         border-radius: 6px 6px 0 0;
         font-size: 20px;
-        font-weight:100;
+        font-weight:100;  
+        background: #fe80ab;
+    }
+
+    .cardContainer {
+         position: relative;
+         top: 0;
+         transition: ease 0.5s;
+    }
+
+    .cardContainer:hover {
+        top: -55px;
+        cursor: pointer;
+    }
+
+    .cardzar-outerbox {
+        position: relative;
+        top: 0;
+        transition: ease 0.5s;
+    }
+
+    .cardzar-outerbox:hover {
+        top: -20px;
+        cursor: pointer;
+    }
+
+    .cardContainer:hover >
+    .selectContainer {
+        visibility: visible;
     }
 
 </style>
