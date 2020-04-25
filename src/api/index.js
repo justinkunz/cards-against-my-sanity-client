@@ -88,6 +88,13 @@ const API = {
         return data;
       }
     },
+    checkStatus: async (state, gameId) => {
+      const Authorization = localStorage.getItem(`p-${gameId}`);
+      const { data } = await apiHandler.get(`game/${gameId}/round`, {
+        Authorization,
+      });
+      return data;
+    }
   },
   players: {
     add: async (state, gameId, name) => {

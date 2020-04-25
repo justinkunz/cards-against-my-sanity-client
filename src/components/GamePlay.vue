@@ -16,7 +16,7 @@
     <div class="current-card">
       <Winner v-if="isGameOver" />
       <Card v-else cardType="black" :cardText="blackCard.text" />
-      <div v-if="isVIP && hasStarted && !round.ready" @click="skipBlackCard()">
+      <div v-if="isVIP && hasStarted && !round.ready && !haveCardSubmissions" @click="skipBlackCard()">
         <div class="skip-card">
           Skip Card
         </div>
@@ -60,7 +60,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["submittedCard", "blackCard", "me", "round", "playerId", "isGameOver", "isVIP", "hasStarted"]),
+    ...mapState(["submittedCard", "blackCard", "me", "round", "playerId", "isGameOver", "isVIP", "hasStarted", "haveCardSubmissions"]),
 
   },
   async mounted() {

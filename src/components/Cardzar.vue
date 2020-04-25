@@ -3,7 +3,7 @@
     <div class="next-round-btn-container" v-if="round.isComplete && me.isCardzar" >
         <md-button class="next-round-btn" @click="nextRound">Next Round</md-button>
     </div>
-    <div v-else class="cardzar-msg--main">You are the Cardzar</div>
+    <div v-else class="cardzar-msg--main">You are the Cardzassr</div>
     <div v-if="!round.ready" class="cardzar-msg--sub">Waiting on submissions. . .</div>
     </div>
 </template>
@@ -12,6 +12,18 @@
 import { mapState } from 'vuex';
 export default {
     name: 'Cardzar',
+    mounted() {
+         this.manualCheck = setInterval(() => {
+            if(!this.round.ready) {
+            this.$store.dispatch("checkRoundStatus", this.$route.params.gameId);
+          }
+        }, 4000);
+    },
+    updated() {
+        if(this.round.ready) {
+            clearInterval(this.manualCheck);
+        }
+    },
     computed: {
         ...mapState(['round', 'me'])
     },

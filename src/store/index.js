@@ -18,6 +18,7 @@ const store = new Vuex.Store({
     players: [],
     gameId: null,
     submittedCard: null,
+    haveCardSubmissions: false,
     hand: [],
     blackCard: {
       id: null,
@@ -56,8 +57,9 @@ const store = new Vuex.Store({
       state.hasStarted = hasStarted;
       state.round = round || {};
       state.blackCard = blackCard;
-      state.isGameOver = game.gameOver || false
-      state.gameWinner = game.winner.winner || {}
+      state.isGameOver = game.gameOver || false;
+      state.gameWinner = game.winner.winner || {};
+      state.haveCardSubmissions = Object.keys(players).some(key => players[key].submittedCard);
 
     },
   },
@@ -103,6 +105,9 @@ const store = new Vuex.Store({
     },
     async skipBlackCard({ state }, gameId) {
       await API.games.skipBlackCard(state, gameId);
+    },
+    async checkRoundStatus({ state }, gameId) {
+      await API.games.checkStatus(state, gameId);
     }
 
 
