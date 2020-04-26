@@ -51,7 +51,9 @@ const API = {
       }
     },
     chooseWinner: async (state, gameId, cardId) => {
+      console.log(state.isFetching.scoring);
       if (state.me && state.me.isCardzar) {
+        console.log('here')
         const Authorization = localStorage.getItem(`p-${gameId}`);
         const { data } = await apiHandler.post(
           `game/${gameId}/round`,
@@ -80,6 +82,7 @@ const API = {
       return data;
     },
     skipBlackCard: async (state, gameId) => {
+      
       if (state.isVIP) {
         const Authorization = localStorage.getItem(`p-${gameId}`);
         const { data } = await apiHandler.put(`game/${gameId}/card`, {

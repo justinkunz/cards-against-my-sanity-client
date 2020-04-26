@@ -1,24 +1,7 @@
-# cards-against-humanity
+# Cards Against My Sanity 
 
-## Project setup
-```
-npm install
-```
+## Client 
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+A VueJS Cards Against Humanity Clone 
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+[Associated Node/Express Server Side Repo](https://github.com/justinkunz/cards-against-my-sanity-server)

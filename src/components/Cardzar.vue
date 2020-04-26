@@ -3,7 +3,7 @@
     <div class="next-round-btn-container" v-if="round.isComplete && me.isCardzar">
       <md-button class="next-round-btn" @click="nextRound">Next Round</md-button>
     </div>
-    <div v-else class="cardzar-msg--main">You are the Cardzassr</div>
+    <div v-else class="cardzar-msg--main">You are the Cardzar</div>
     <div v-if="!round.ready" class="cardzar-msg--sub">Waiting on submissions. . .</div>
   </div>
 </template>

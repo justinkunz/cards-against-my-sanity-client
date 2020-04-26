@@ -7,8 +7,17 @@
 
       <md-card-content class="players-list-content">
         <md-list>
-          <md-list-item v-for="(player, index) in formattedPlayers" :key="index" :class="determineWrapperClass(player)">
+          <md-list-item
+            v-for="(player, index) in formattedPlayers"
+            :key="index"
+            :class="determineWrapperClass(player)"
+          >
             <md-avatar :class="player.color">{{player.initials}}</md-avatar>
+            
+            <md-tooltip  v-show="player.isCardzar">{{player.name}} is the cardzar</md-tooltip>
+            <div v-show="player.isCardzar" class="cardzar-crown-wrap">
+              <i class="fas fa-crown cardzar-crown"></i>
+            </div>
             <span class="md-list-item-text">{{player.name}}</span>
             <span class="score">{{player.score}}</span>
           </md-list-item>
@@ -18,8 +27,8 @@
         <md-button class="md-dense md-raised md-primary" @click="beginGame()">Start Game</md-button>
       </div>
       <div class="btn-container" v-else-if="!hasStarted && isVIP">
-         <md-button class="md-raised" disabled>Start Game</md-button>
-         <md-tooltip md-direction="bottom">Must have a minimum of 3 players</md-tooltip>
+        <md-button class="md-raised" disabled>Start Game</md-button>
+        <md-tooltip md-direction="bottom">Must have a minimum of 3 players</md-tooltip>
       </div>
     </md-ripple>
   </md-card>
@@ -32,20 +41,22 @@ export default {
   computed: {
     ...mapState(["players", "hasStarted", "round", "isVIP", "me"]),
     formattedPlayers() {
-        let colorNum = 1;
+      let colorNum = 1;
       return this.players.map(player => {
         const { name, score, isCardzar } = player;
-        const words = name
-          .split(" ");
-          const initials = words.length === 1 ? 
-          name[0].toUpperCase() + name[1].toLowerCase() 
-          : words.slice(0, 2)
-          .map(i => i[0])
-          .join("")
-          .toUpperCase();
+        const words = name.trim().split(" ");
 
-        const color = `player-avatar--${colorNum}`
-        colorNum = colorNum >= 5 ? 1 : colorNum + 1
+        const initials =
+          words.length === 1
+            ? name[0].toUpperCase() + name[1].toLowerCase()
+            : words
+                .slice(0, 2)
+                .map(i => i[0])
+                .join("")
+                .toUpperCase();
+
+        const color = `player-avatar--${colorNum}`;
+        colorNum = colorNum >= 5 ? 1 : colorNum + 1;
         return {
           name,
           score,
@@ -61,9 +72,10 @@ export default {
       this.$store.dispatch("beginGame", this.$route.params.gameId);
     },
     determineWrapperClass(player) {
-      if(player.isCardzar) return 'cardzar';
-      if(this.round.winner && player.name === this.round.winner.name) return 'winner';
-      return '';
+      if (player.isCardzar) return "cardzar";
+      if (this.round.winner && player.name === this.round.winner.name)
+        return "winner";
+      return "";
     }
   }
 };
@@ -95,12 +107,21 @@ export default {
   font-size: 14px;
 }
 
-.cardzar {
-    background: #00bcd459;
-    border-radius: 30px;
-    margin: 5px 0;
+.cardzar-crown-wrap {
+  height: 25px;
+  width: 25px;
+  padding: 3px;
+  border-radius: 100%;
+  background-color: #fdea48;
+  position: absolute;
+  z-index: 999;
+  top: 3px;
+  left: 1px;
 }
 
+.cardzar-crown {
+  color: #4c4d4d;
+}
 .winner {
   background: #00d41c59;
   border-radius: 30px;
@@ -112,22 +133,22 @@ export default {
 }
 
 .player-avatar--1 {
-    background-color: #673ab7
+  background-color: #673ab7;
 }
 
 .player-avatar--2 {
-    background-color: #009688
+  background-color: #009688;
 }
 
 .player-avatar--3 {
-    background-color: #f44336
+  background-color: #f44336;
 }
 
 .player-avatar--4 {
-    background-color: #3f51b5
+  background-color: #3f51b5;
 }
 
 .player-avatar--5 {
-    background-color: #607d8b
+  background-color: #607d8b;
 }
 </style>

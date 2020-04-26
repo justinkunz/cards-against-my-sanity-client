@@ -19,6 +19,11 @@ const store = new Vuex.Store({
     gameId: null,
     submittedCard: null,
     haveCardSubmissions: false,
+    isFetching: {
+      scoring: false,
+      nextRound: false,
+      skipCard: false,
+    },
     hand: [],
     blackCard: {
       id: null,
@@ -40,6 +45,13 @@ const store = new Vuex.Store({
     },
     setExpansionPacks(state, packs) {
       state.expansionPacks = packs;
+    },
+
+    setFetchingStatus(state, { type, status }) {
+      state.isFetching = {
+        ...state.isFetching,
+        [type]: status,
+      }
     },
 
     updateGame(state, { game }) {
@@ -89,11 +101,17 @@ const store = new Vuex.Store({
       commit("setGameInfo", { gameId, hand, isVIP });
       commit("setPlayerInfo", playerId);
     },
-    async selectRoundWinner({ state }, { gameId, cardId }) {
+    async selectRoundWinner({ state, commit }, { gameId, cardId }) {
+      if(state.isFetching.scoring) return;
+      commit('setFetchingStatus', { type: 'scoring', status: true });
       await API.games.chooseWinner(state, gameId, cardId);
+      commit('setFetchingStatus', { type: 'scoring', status: false });
     },
-    async nextRound(app, gameId) {
+    async nextRound({ state, commit }, gameId) {
+      if(state.isFetching.nextRound) return;
+      commit('setFetchingStatus', { type: 'nextRound', status: true });
       await API.games.nextRound(gameId);
+      commit('setFetchingStatus', { type: 'nextRound', status: false });
     },
 
     async getExpansionPacks({ commit }){
@@ -103,8 +121,11 @@ const store = new Vuex.Store({
     async resetGame(app, gameId) {
       await API.games.resetGame(gameId);
     },
-    async skipBlackCard({ state }, gameId) {
+    async skipBlackCard({ state, commit }, gameId) {
+      if(state.isFetching.skipCard) return;
+      commit('setFetchingStatus', { type: 'skipCard', status: true });
       await API.games.skipBlackCard(state, gameId);
+      commit('setFetchingStatus', { type: 'skipCard', status: false });
     },
     async checkRoundStatus({ state }, gameId) {
       await API.games.checkStatus(state, gameId);
