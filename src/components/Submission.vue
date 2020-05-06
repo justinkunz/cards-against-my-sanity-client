@@ -7,23 +7,21 @@
       />
        <div class="winning-card-text">{{round.winner.name}} won!</div>
     </div>
-    <CardSet
-      v-else-if="round.ready"
-      :cards="round.cards"
+
+     <CardSet
+      v-else-if="cardSubmissions"
+      :cards="cardSubmissions"
       cardType="white"
       :setType="submissionView"
+      :flip="round.ready"
       :handleClick="handleClick"
-    />
-    <Card
-      v-else-if="submittedCard"
-      cardType="white"
-      :cardText="submittedCard.text"
+      startingPosition="back"
     />
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import CardSet from "./CardSet.vue";
 import Card from "./Card.vue";
 
@@ -34,15 +32,21 @@ export default {
     Card,
   },
   computed: {
-    ...mapState(["submittedCard", "round", "me"]),
+    ...mapState({
+      round: (state) => state.game.round,
+      isCardzar: (state) => state.player.isCardzar,
+    }),
+    ...mapGetters(['cardSubmissions']),
     submissionView() {
-      return this.me.isCardzar ? "cardzarSubmission" : "submission";
+      return this.isCardzar && this.round.ready ? "cardzarSubmission" : "submission";
     },
   },
   methods: {
     handleClick(cardId) {
-      const { gameId } = this.$route.params;
-      this.$store.dispatch("selectRoundWinner", { cardId, gameId });
+      if(this.round.ready){
+        const gameId = this.$route.params.gameId.toLowerCase();
+        this.$store.dispatch("selectRoundWinner", { cardId, gameId });
+      }
     },
   },
 };

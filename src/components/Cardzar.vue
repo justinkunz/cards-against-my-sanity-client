@@ -1,6 +1,6 @@
 <template>
-  <div class="cardzar-msg">
-    <div class="next-round-btn-container" v-if="round.isComplete && me.isCardzar">
+  <div class="cardzar-msg" v-if="isCardzar && !isGameOver && !roundRequested">
+    <div class="next-round-btn-container" v-if="round.isComplete">
       <md-button class="next-round-btn" @click="nextRound">Next Round</md-button>
     </div>
     <div v-else class="cardzar-msg--main">You are the Cardzar</div>
@@ -12,10 +12,15 @@
 import { mapState } from "vuex";
 export default {
   name: "Cardzar",
+  data() {
+    return {
+      roundRequested: false
+    }
+  },
   mounted() {
     this.manualCheck = setInterval(() => {
-      if (!this.round.ready) {
-        this.$store.dispatch("checkRoundStatus", this.$route.params.gameId);
+      if (!this.round.ready && this.isCardzar) {
+        this.$store.dispatch("checkRoundStatus", this.$route.params.gameId.toLowerCase());
       }
     }, 10000);
   },
@@ -25,11 +30,17 @@ export default {
     }
   },
   computed: {
-    ...mapState(["round", "me"])
+    ...mapState({
+      round: (state) => state.game.round,
+      isCardzar: (state) => state.player.isCardzar,
+      isGameOver: (state) => state.game.isGameOver
+    })
   },
   methods: {
     nextRound() {
-      this.$store.dispatch("nextRound", this.$route.params.gameId);
+      this.roundRequested = true;
+
+      this.$store.dispatch("nextRound", this.$route.params.gameId.toLowerCase());
     }
   }
 };

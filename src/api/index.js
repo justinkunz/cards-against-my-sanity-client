@@ -24,44 +24,34 @@ const apiHandler = {
 
 const API = {
   games: {
-    create: async (state, options) => {
-      if (!state.hasStarted) {
-        const { data } = await apiHandler.post("game", {}, { options });
-        return data;
-      }
+    create: async (options) => {
+      const { data } = await apiHandler.post("game", {}, { options });
+      return data;
     },
-    start: async (state, gameId) => {
-      if (state.players.length >= 3) {
-        const Authorization = localStorage.getItem(`p-${gameId}`);
-        const { data } = await apiHandler.post(`game/${gameId}/start`, {
-          Authorization,
-        });
-        return data;
-      }
+    start: async (gameId) => {
+      const Authorization = localStorage.getItem(`p-${gameId}`);
+      const { data } = await apiHandler.post(`game/${gameId}/start`, {
+        Authorization,
+      });
+      return data;
     },
-    submitCard: async (state, gameId, cardId) => {
-      if (!state.submittedCard && state.me && !state.me.isCardzar) {
-        const Authorization = localStorage.getItem(`p-${gameId}`);
-        const { data } = await apiHandler.post(
-          `game/${gameId}/card`,
-          { Authorization },
-          { cardId }
-        );
-        return data;
-      }
+    submitCard: async (gameId, cardId) => {
+      const Authorization = localStorage.getItem(`p-${gameId}`);
+      const { data } = await apiHandler.post(
+        `game/${gameId}/card`,
+        { Authorization },
+        { cardId }
+      );
+      return data;
     },
-    chooseWinner: async (state, gameId, cardId) => {
-      console.log(state.isFetching.scoring);
-      if (state.me && state.me.isCardzar) {
-        console.log('here')
-        const Authorization = localStorage.getItem(`p-${gameId}`);
-        const { data } = await apiHandler.post(
-          `game/${gameId}/round`,
-          { Authorization },
-          { cardId }
-        );
-        return data;
-      }
+    chooseWinner: async (gameId, cardId) => {
+      const Authorization = localStorage.getItem(`p-${gameId}`);
+      const { data } = await apiHandler.post(
+        `game/${gameId}/round`,
+        { Authorization },
+        { cardId }
+      );
+      return data;
     },
     nextRound: async (gameId) => {
       const Authorization = localStorage.getItem(`p-${gameId}`);
@@ -81,26 +71,23 @@ const API = {
       });
       return data;
     },
-    skipBlackCard: async (state, gameId) => {
-      
-      if (state.isVIP) {
-        const Authorization = localStorage.getItem(`p-${gameId}`);
-        const { data } = await apiHandler.put(`game/${gameId}/card`, {
-          Authorization,
-        });
-        return data;
-      }
+    skipBlackCard: async (gameId) => {
+      const Authorization = localStorage.getItem(`p-${gameId}`);
+      const { data } = await apiHandler.put(`game/${gameId}/card`, {
+        Authorization,
+      });
+      return data;
     },
-    checkStatus: async (state, gameId) => {
+    checkStatus: async (gameId) => {
       const Authorization = localStorage.getItem(`p-${gameId}`);
       const { data } = await apiHandler.get(`game/${gameId}/round`, {
         Authorization,
       });
       return data;
-    }
+    },
   },
   players: {
-    add: async (state, gameId, name) => {
+    add: async (gameId, name) => {
       const Authorization = localStorage.getItem(`p-${gameId}`);
       const { data } = await apiHandler.post(
         `game/${gameId}/player`,
@@ -109,7 +96,7 @@ const API = {
       );
       return data;
     },
-    getInfo: async (state, gameId) => {
+    getInfo: async (gameId) => {
       const Authorization = localStorage.getItem(`p-${gameId}`);
       const { data } = await apiHandler.get(`game/${gameId}/player`, {
         Authorization,
@@ -117,6 +104,12 @@ const API = {
       return data;
     },
   },
+  config: {
+    firebase: async() => {
+      const { data } = await apiHandler.get('config');
+      return data;
+    }
+  }
 };
 
 module.exports = API;

@@ -1,5 +1,6 @@
 <template>
   <div class="current-game">
+    <Countdown :time="time" />
     <sweet-modal ref="captureName" blocking hide-close-button>
       <md-field md-inline class="player-name-input">
         <label>Enter your name</label>
@@ -26,13 +27,13 @@
 
     <Submission />
 
-    <Cardzar v-if="me.isCardzar" />
+    <Cardzar v-if="isCardzar" />
     <CardHand v-else />
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import Card from "./Card.vue";
 import CurrentPlayers from "./CurrentPlayers.vue";
 import { db } from "../firebase";
@@ -40,16 +41,18 @@ import CardHand from "./CardHand.vue";
 import Cardzar from './Cardzar.vue';
 import Submission from './Submission.vue';
 import Winner from './Winner.vue';
+import Countdown from './Countdown';
 
 export default {
   name: "GamePlay",
   components: {
     Card,
+    Countdown,
     CurrentPlayers,
     CardHand,
     Cardzar,
     Submission,
-    Winner
+    Winner,
   },
   data() {
     return {
@@ -57,14 +60,23 @@ export default {
         name: null,
         nameAlert: '',
       },
+      time: 10
     };
   },
   computed: {
-    ...mapState(["submittedCard", "blackCard", "me", "round", "playerId", "isGameOver", "isVIP", "hasStarted", "haveCardSubmissions"]),
-
+    ...mapState({
+      submittedCard: (state) => state.player.submittedCard,
+      blackCard: (state) => state.game.blackCard,
+      isCardzar: (state) => state.player.isCardzar,
+      round: (state) => state.game.round,
+      isGameOver: (state) => state.game.isGameOver,
+      isVIP: (state) => state.player.isVIP,
+      hasStarted: (state) => state.game.hasStarted,
+    }),
+    ...mapGetters(['haveCardSubmissions'])
   },
   async mounted() {
-    const { gameId } = this.$route.params;
+    const gameId = this.$route.params.gameId.toLowerCase();
     this.trackFirebase(gameId);
     const jwtToken = localStorage.getItem(`p-${gameId}`);
     if (!jwtToken) {
@@ -74,7 +86,7 @@ export default {
     }
   },
   updated() {
-    const { gameId } = this.$route.params;
+    const  gameId = this.$route.params.gameId.toLowerCase();
     const jwtToken = localStorage.getItem(`p-${gameId}`);
 
     if (jwtToken) {
@@ -93,18 +105,18 @@ export default {
               this.$store.dispatch('getPlayerInfo', { gameId });
             }
           }
-          this.$store.commit("updateGame", { game, gameId });
+          this.$store.dispatch("updateGame", game);
 
         }
       });
     },
     skipBlackCard() {
-      const { gameId } = this.$route.params;
+      const  gameId = this.$route.params.gameId.toLowerCase();
       this.$store.dispatch('skipBlackCard', gameId)
     },
     async addPlayer() {
       try {
-      const { gameId } = this.$route.params;
+      const gameId = this.$route.params.gameId.toLowerCase();
        this.$refs.captureName.close();
        await this.$store.dispatch("addPlayer", { gameId, name: this.form.name });
       } catch(err) {
@@ -144,7 +156,13 @@ export default {
 .current-game {
   display: flex;
   justify-content: center;
+  overflow: scroll;
+  padding-top: 5em;
 }
+
+.current-game::-webkit-scrollbar {
+    display: none;
+} 
 
 .name-modal {
   text-align: center;

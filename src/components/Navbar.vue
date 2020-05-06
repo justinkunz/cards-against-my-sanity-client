@@ -35,7 +35,6 @@ nav {
 }
 .clear {
     clear:both;
-    height: 5rem;
     width:100%;
 }
 

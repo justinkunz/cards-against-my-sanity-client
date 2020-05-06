@@ -86,7 +86,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(["expansionPacks"]),
+    ...mapState({
+      expansionPacks: (state) => state.game.expansionPacks
+    }),
   },
   methods: {
     async launchGame() {
@@ -94,8 +96,6 @@ export default {
       this.$router.push(`/g/${gameId}`);
     },
     getGameOptions() {
-      let container = this.$refs.container
-    this.$copyText("Text to copy", container)
       this.$refs.joinOrStart.close();
       this.$refs.gameOptions.open();
     },
@@ -107,16 +107,16 @@ export default {
       this.$refs.joinGame.open();
     },
     redirectToGame() {
-      this.$router.push(`/g/-${this.form.gameCode}`);
+      this.$router.push(`/g/${this.form.gameCode}`);
     },
   },
   mounted() {
     this.$refs.joinOrStart.open();
+    this.$store.dispatch('getConfig');
   },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .app-title {
   font-size: 50px;

@@ -1,34 +1,31 @@
 <template>
-    <sweet-modal ref="joinOrStart">
-      <div class="winner-title">
-        {{gameWinner.name}} Wins!!
-      </div>
-      <div class="game-btn-container">
-        <md-button class="md-raised md-primary" @click="playAgain()"
-          >Play Again</md-button
-        >
-      </div>
-    </sweet-modal>
+  <sweet-modal ref="joinOrStart">
+    <div class="winner-title">{{gameWinner.name}} Wins!!</div>
+    <div class="game-btn-container">
+      <md-button class="md-raised md-primary" @click="playAgain()">Play Again</md-button>
+    </div>
+  </sweet-modal>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 export default {
-    name: 'Winner',
-    computed: {
-        ...mapState(['gameWinner'])
-    },
-    methods: {
-      playAgain() {
-        const { gameId } = this.$route.params;
-        this.$store.dispatch('resetGame', gameId)
-      }
-    },
-    mounted() {
-        this.$refs.joinOrStart.open();
+  name: "Winner",
+  computed: {
+    ...mapState({
+      gameWinner: state => state.game.gameWinner
+    })
   },
-
-}
+  methods: {
+    playAgain() {
+      const gameId = this.$route.params.gameId.toLowerCase();
+      this.$store.dispatch("resetGame", gameId);
+    }
+  },
+  mounted() {
+    this.$refs.joinOrStart.open();
+  }
+};
 </script>
 
 <style>
@@ -37,5 +34,4 @@ export default {
   font-family: "Bebas Neue", sans-serif;
   margin-bottom: 50px;
 }
-
 </style>
