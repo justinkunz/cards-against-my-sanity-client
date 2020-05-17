@@ -21,14 +21,19 @@
         </div>
       </div>
     </div>
+    <div v-else >
+      <div v-if="players[playerId].score >=2" @click="confirmCardRefresh()">
+        <md-icon class="refresh-cards-icon md-size-2x">cached</md-icon>
+        <md-tooltip md-direction="bottom">Don't like your cards? Exchange 2 points to refresh your hand</md-tooltip>
+      </div>
     <CardSet
-      v-else
       cardType="white"
       :cards="hand"
       shadow="true"
       :handleClick="handleClick"
       setType="deck"
     />
+    </div>
   </div>
 </template>
 
@@ -39,7 +44,7 @@ import { mapState } from "vuex";
 export default {
   name: "CardHand",
   components: {
-    CardSet
+    CardSet,
   },
   data() {
     return {
@@ -53,7 +58,9 @@ export default {
     ...mapState({
       hand: state => state.player.hand,
       submittedCard: state => state.player.submittedCard,
-      hasStarted: state => state.game.hasStarted
+      hasStarted: state => state.game.hasStarted,
+      players: (state) => state.game.playerSummary,
+      playerId: (state) => state.player.playerId,
     }),
     gameId() {
       return this.$route.params.gameId.toLowerCase();
@@ -85,6 +92,9 @@ export default {
     copyGameCode() {
       this.$copyText(this.gameId, this.$refs.container);
       this.copied.code = true;
+    },
+    confirmCardRefresh() {
+      this.$store.dispatch('toggleRefrshHandConfirm')
     }
   }
 };
@@ -133,5 +143,15 @@ export default {
   font-size: 24px;
   margin-left: 0.25em;
   color: #d53d3c;
+}
+
+.refresh-cards-icon {
+  position: absolute;
+  top: 0;
+  left: 10px;
+}
+
+.refresh-cards-icon:hover {
+  cursor: pointer;
 }
 </style>

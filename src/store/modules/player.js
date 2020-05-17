@@ -7,6 +7,7 @@ const state = {
   isCardzar: false,
   submittedCard: false,
   hand: [],
+  score: 0,
 };
 
 const mutations = {
@@ -24,7 +25,7 @@ const mutations = {
     const players = game.players || {};
     const me = players[state.playerId];
     state.isCardzar = me && me.isCardzar;
-  }
+  },
 
 };
 
@@ -48,5 +49,8 @@ const actions = {
     commit(mutationTypes.SET_PLAYER_INFO, { playerId, isVIP });
     commit(mutationTypes.UPDATE_HAND, hand);
   },
+  async refreshHand(context, { gameId }) {
+   await API.players.refreshHand(gameId)
+  }
 }
 export default { state, mutations, actions };

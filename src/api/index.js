@@ -1,11 +1,12 @@
 const axios = require("axios");
 
 const apiHandler = {
-  get: (endpoint, headers) =>
+  get: (endpoint, headers, params) =>
     axios({
       method: "GET",
       url: `/api/${endpoint}`,
       headers,
+      params,
     }),
   post: (endpoint, headers, data) =>
     axios({
@@ -17,6 +18,12 @@ const apiHandler = {
   put: (endpoint, headers) =>
     axios({
       method: "PUT",
+      url: `/api/${endpoint}`,
+      headers,
+    }),
+  delete: (endpoint, headers) =>
+    axios({
+      method: "DELETE",
       url: `/api/${endpoint}`,
       headers,
     }),
@@ -60,8 +67,8 @@ const API = {
       });
       return data;
     },
-    getExpansionPacks: async () => {
-      const { data } = await apiHandler.get("game/deck");
+    getExpansionPacks: async (query) => {
+      const { data } = await apiHandler.get("game/deck", {}, query);
       return data;
     },
     resetGame: async (gameId) => {
@@ -103,13 +110,15 @@ const API = {
       });
       return data;
     },
-  },
-  config: {
-    firebase: async() => {
-      const { data } = await apiHandler.get('config');
+
+    refreshHand: async (gameId) => {
+      const Authorization = localStorage.getItem(`p-${gameId}`);
+      const { data } = await apiHandler.delete(`game/${gameId}/player/hand`, {
+        Authorization,
+      });
       return data;
-    }
-  }
+    },
+  },
 };
 
 module.exports = API;

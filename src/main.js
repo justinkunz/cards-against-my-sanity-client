@@ -7,12 +7,12 @@ import VueMaterial from "vue-material";
 import "vue-material/dist/vue-material.min.css";
 import "vue-material/dist/theme/default.css";
 import { firestorePlugin } from "vuefire";
-import VueClipboard from 'vue-clipboard2'
- 
-VueClipboard.config.autoSetContainer = true; 
+import VueClipboard from "vue-clipboard2";
+
+VueClipboard.config.autoSetContainer = true;
 Vue.config.productionTip = false;
 
-Vue.use(VueClipboard)
+Vue.use(VueClipboard);
 Vue.use(SweetModal);
 Vue.use(VueMaterial);
 Vue.use(firestorePlugin);

@@ -1,6 +1,6 @@
 <template>
   <div class="current-game">
-    <Countdown :time="time" />
+    <ConfirmResetModal />
     <sweet-modal ref="captureName" blocking hide-close-button>
       <md-field md-inline class="player-name-input">
         <label>Enter your name</label>
@@ -17,11 +17,16 @@
     <div class="current-card">
       <Winner v-if="isGameOver" />
       <Card v-else cardType="black" :cardText="blackCard.text" />
-      <div v-if="isVIP && hasStarted && !round.ready && !haveCardSubmissions" @click="skipBlackCard()">
+      <div
+        v-if="isVIP && hasStarted && !round.ready && !haveCardSubmissions"
+        @click="skipBlackCard()"
+      >
         <div class="skip-card">
           Skip Card
         </div>
-        <md-tooltip md-direction="bottom">As the game's VIP, you can skip black cards</md-tooltip>
+        <md-tooltip md-direction="bottom"
+          >As the game's VIP, you can skip black cards</md-tooltip
+        >
       </div>
     </div>
 
@@ -38,29 +43,28 @@ import Card from "./Card.vue";
 import CurrentPlayers from "./CurrentPlayers.vue";
 import { db } from "../firebase";
 import CardHand from "./CardHand.vue";
-import Cardzar from './Cardzar.vue';
-import Submission from './Submission.vue';
-import Winner from './Winner.vue';
-import Countdown from './Countdown';
+import Cardzar from "./Cardzar.vue";
+import Submission from "./Submission.vue";
+import Winner from "./Winner.vue";
+import ConfirmResetModal from "./ConfirmResetModal";
 
 export default {
   name: "GamePlay",
   components: {
     Card,
-    Countdown,
     CurrentPlayers,
     CardHand,
     Cardzar,
     Submission,
     Winner,
+    ConfirmResetModal,
   },
   data() {
     return {
       form: {
         name: null,
-        nameAlert: '',
+        nameAlert: "",
       },
-      time: 10
     };
   },
   computed: {
@@ -73,7 +77,7 @@ export default {
       isVIP: (state) => state.player.isVIP,
       hasStarted: (state) => state.game.hasStarted,
     }),
-    ...mapGetters(['haveCardSubmissions'])
+    ...mapGetters(["haveCardSubmissions"]),
   },
   async mounted() {
     const gameId = this.$route.params.gameId.toLowerCase();
@@ -86,9 +90,8 @@ export default {
     }
   },
   updated() {
-    const  gameId = this.$route.params.gameId.toLowerCase();
+    const gameId = this.$route.params.gameId.toLowerCase();
     const jwtToken = localStorage.getItem(`p-${gameId}`);
-
     if (jwtToken) {
       this.$refs.captureName.close();
     }
@@ -99,28 +102,30 @@ export default {
       gameRef.on("value", (snapshot) => {
         const game = snapshot.val();
         if (game) {
-          if(game.blackCard.text !== this.blackCard.text) {
-            const jwtToken = localStorage.getItem(`p-${gameId}`)
-            if(jwtToken){
-              this.$store.dispatch('getPlayerInfo', { gameId });
+          if (game.blackCard.text !== this.blackCard.text) {
+            const jwtToken = localStorage.getItem(`p-${gameId}`);
+            if (jwtToken) {
+              this.$store.dispatch("getPlayerInfo", { gameId });
             }
           }
           this.$store.dispatch("updateGame", game);
-
         }
       });
     },
     skipBlackCard() {
-      const  gameId = this.$route.params.gameId.toLowerCase();
-      this.$store.dispatch('skipBlackCard', gameId)
+      const gameId = this.$route.params.gameId.toLowerCase();
+      this.$store.dispatch("skipBlackCard", gameId);
     },
     async addPlayer() {
       try {
-      const gameId = this.$route.params.gameId.toLowerCase();
-       this.$refs.captureName.close();
-       await this.$store.dispatch("addPlayer", { gameId, name: this.form.name });
-      } catch(err) {
-        this.$router.push('/');
+        const gameId = this.$route.params.gameId.toLowerCase();
+        this.$refs.captureName.close();
+        await this.$store.dispatch("addPlayer", {
+          gameId,
+          name: this.form.name,
+        });
+      } catch (err) {
+        this.$router.push("/");
       }
     },
   },
@@ -161,8 +166,8 @@ export default {
 }
 
 .current-game::-webkit-scrollbar {
-    display: none;
-} 
+  display: none;
+}
 
 .name-modal {
   text-align: center;
