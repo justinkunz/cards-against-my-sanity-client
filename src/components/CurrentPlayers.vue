@@ -1,6 +1,10 @@
 <template>
   <div class="players-list-container">
-    <md-card class="players-list" :class="playerListDisplay.containerClass" md-with-hover>
+    <md-card
+      class="players-list"
+      :class="playerListDisplay.containerClass"
+      md-with-hover
+    >
       <md-ripple>
         <md-card-header>
           <div class="md-title">Players</div>
@@ -12,23 +16,32 @@
               :key="index"
               :class="determineWrapperClass(player)"
             >
-              <md-avatar :class="player.color">{{player.initials}}</md-avatar>
+              <md-avatar :class="player.color">{{ player.initials }}</md-avatar>
 
-              <md-tooltip v-show="player.isCardzar">{{player.name}} is the cardzar</md-tooltip>
+              <md-tooltip v-show="player.isCardzar"
+                >{{ player.name }} is the cardzar</md-tooltip
+              >
               <div v-show="player.isCardzar" class="cardzar-crown-wrap">
                 <i class="fas fa-crown cardzar-crown"></i>
               </div>
-              <span class="md-list-item-text">{{player.name}}</span>
-              <span class="score">{{player.score}}</span>
+              <span class="md-list-item-text">{{ player.name }}</span>
+              <span class="score">{{ player.score }}</span>
             </md-list-item>
           </md-list>
         </md-card-content>
-        <div class="btn-container" v-if="!hasStarted && players.length >= 3 && isVIP">
-          <md-button class="md-dense md-raised md-primary" @click="beginGame()">Start Game</md-button>
+        <div
+          class="btn-container"
+          v-if="!hasStarted && players.length >= 3 && isVIP"
+        >
+          <md-button class="md-dense md-raised md-primary" @click="beginGame()"
+            >Start Game</md-button
+          >
         </div>
         <div class="btn-container" v-else-if="!hasStarted && isVIP">
           <md-button class="md-raised" disabled>Start Game</md-button>
-          <md-tooltip md-direction="bottom">Must have a minimum of 3 players</md-tooltip>
+          <md-tooltip md-direction="bottom"
+            >Must have a minimum of 3 players</md-tooltip
+          >
         </div>
       </md-ripple>
       <div
@@ -36,7 +49,9 @@
         v-if="hasStarted"
         :class="playerListDisplay.labelClass"
         @click="togglePlayersList()"
-      >{{playerListDisplay.labelText}}</div>
+      >
+        {{ playerListDisplay.labelText }}
+      </div>
     </md-card>
   </div>
 </template>
@@ -48,24 +63,24 @@ export default {
   name: "CurrentPlayers",
   computed: {
     ...mapState({
-      hasStarted: state => state.game.hasStarted,
-      round: state => state.game.round,
-      showPlayerList: state => state.app.showPlayerList,
-      isVIP: state => state.player.isVIP
+      hasStarted: (state) => state.game.hasStarted,
+      round: (state) => state.game.round,
+      showPlayerList: (state) => state.app.showPlayerList,
+      isVIP: (state) => state.player.isVIP,
     }),
-    ...mapGetters(['players']),
+    ...mapGetters(["players"]),
     formattedPlayers() {
       let colorNum = 1;
-      return this.players.map(player => {
+      return this.players.map((player) => {
         const { name, score, isCardzar, id } = player;
         const words = name.trim().split(" ");
 
         const initials =
           words.length === 1
-            ? name[0].toUpperCase() + name[1].toLowerCase()
+            ? name[0].toUpperCase() + (name[1] || "").toLowerCase()
             : words
                 .slice(0, 2)
-                .map(i => i[0])
+                .map((i) => i[0])
                 .join("")
                 .toUpperCase();
 
@@ -77,7 +92,7 @@ export default {
           score,
           initials,
           isCardzar,
-          color
+          color,
         };
       });
     },
@@ -86,14 +101,14 @@ export default {
         ? {
             containerClass: "players-list--open",
             labelClass: "player-list-side-label--visible",
-            labelText: "Hide"
+            labelText: "Hide",
           }
         : {
             containerClass: "players-list--closed",
             labelClass: "player-list-side-label--hidden",
-            labelText: "Show"
+            labelText: "Show",
           };
-    }
+    },
   },
   methods: {
     beginGame() {
@@ -110,8 +125,8 @@ export default {
     },
     togglePlayersList() {
       this.$store.dispatch("togglePlayerListView");
-    }
-  }
+    },
+  },
 };
 </script>
 

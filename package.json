@@ -1,6 +1,6 @@
 {
   "name": "cards-against-humanity",
-  "version": "0.1.0",
+  "version": "3.4.9",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "dotenv": "^8.2.0",
     "firebase": "^7.14.1",
     "node-sass": "^4.14.1",
     "request-ip": "^2.1.3",

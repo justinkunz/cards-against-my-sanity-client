@@ -3,6 +3,7 @@ import API from "../../api";
 
 const state = {
   expansionPacks: [],
+  gameId: null,
   isGameOver: false,
   gameWinner: {},
   round: {},
@@ -34,6 +35,9 @@ const mutations = {
   [mutationTypes.SET_EXPANSION_PACKS](state, packs) {
     state.expansionPacks = packs;
   },
+  [mutationTypes.SET_GAME_ID](state, gameId) {
+    state.gameId = gameId;
+  },
   [mutationTypes.SET_GAME](state, game) {
     const { blackCard, round, hasStarted } = game;
 
@@ -51,8 +55,9 @@ const actions = {
     commit(mutationTypes.SET_GAME, game);
     commit(mutationTypes.SET_ROLE, game);
   },
-  async createGame(context, options) {
+  async createGame({ commit }, options) {
     const { gameId } = await API.games.create(options);
+    commit(mutationTypes.SET_GAME_ID, gameId);
     return gameId;
   },
   async beginGame(context, gameId) {

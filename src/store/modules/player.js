@@ -1,5 +1,5 @@
-import * as mutationTypes from '../../constants/mutationTypes';
-import API from '../../api';
+import * as mutationTypes from "../../constants/mutationTypes";
+import API from "../../api";
 
 const state = {
   id: null,
@@ -26,13 +26,14 @@ const mutations = {
     const me = players[state.playerId];
     state.isCardzar = me && me.isCardzar;
   },
-
 };
 
 const actions = {
   async getPlayerInfo({ commit }, { gameId }) {
-    const { hand, submittedCard, isVIP, playerId } = await API.players.getInfo(gameId);
-    commit(mutationTypes.SET_PLAYER_INFO, { playerId, isVIP })
+    const { hand, submittedCard, isVIP, playerId } = await API.players.getInfo(
+      gameId
+    );
+    commit(mutationTypes.SET_PLAYER_INFO, { playerId, isVIP });
     commit(mutationTypes.UPDATE_HAND, hand);
     commit(mutationTypes.SUBMIT_CARD, submittedCard);
   },
@@ -44,13 +45,16 @@ const actions = {
     commit(mutationTypes.SUBMIT_CARD, submittedCard);
   },
   async addPlayer({ commit }, { gameId, name }) {
-    const { jwtToken, hand, isVIP, playerId } = await API.players.add(gameId, name);
+    const { jwtToken, hand, isVIP, playerId } = await API.players.add(
+      gameId,
+      name
+    );
     localStorage.setItem(`p-${gameId}`, jwtToken);
     commit(mutationTypes.SET_PLAYER_INFO, { playerId, isVIP });
     commit(mutationTypes.UPDATE_HAND, hand);
   },
   async refreshHand(context, { gameId }) {
-   await API.players.refreshHand(gameId)
-  }
-}
+    await API.players.refreshHand(gameId);
+  },
+};
 export default { state, mutations, actions };

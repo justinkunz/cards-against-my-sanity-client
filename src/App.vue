@@ -2,16 +2,19 @@
   <div id="app">
     <Navbar />
     <router-view />
+    <Version />
   </div>
 </template>
 
 <script>
 import Navbar from "./components/Navbar.vue";
+import Version from './components/Version';
 
 export default {
   name: "App",
   components: {
-    Navbar
+    Navbar,
+    Version
   }
 };
 </script>

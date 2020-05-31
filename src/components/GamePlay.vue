@@ -63,7 +63,6 @@ export default {
     return {
       form: {
         name: null,
-        nameAlert: "",
       },
     };
   },
@@ -101,15 +100,14 @@ export default {
       const gameRef = db.ref(`games/${gameId}`);
       gameRef.on("value", (snapshot) => {
         const game = snapshot.val();
-        if (game) {
-          if (game.blackCard.text !== this.blackCard.text) {
-            const jwtToken = localStorage.getItem(`p-${gameId}`);
-            if (jwtToken) {
-              this.$store.dispatch("getPlayerInfo", { gameId });
-            }
+
+        if (game && game.blackCard.text !== this.blackCard.text) {
+          const jwtToken = localStorage.getItem(`p-${gameId}`);
+          if (jwtToken) {
+            this.$store.dispatch("getPlayerInfo", { gameId });
           }
-          this.$store.dispatch("updateGame", game);
         }
+        this.$store.dispatch("updateGame", game);
       });
     },
     skipBlackCard() {
@@ -118,6 +116,7 @@ export default {
     },
     async addPlayer() {
       try {
+        if (!this.form.name) return;
         const gameId = this.$route.params.gameId.toLowerCase();
         this.$refs.captureName.close();
         await this.$store.dispatch("addPlayer", {

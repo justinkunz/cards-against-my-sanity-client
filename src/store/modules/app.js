@@ -5,6 +5,10 @@ const state = {
   showRefreshModal: false,
 };
 
+const getters = {
+  version: () => process.env.VUE_APP_VERSION || "1.0.0",
+};
+
 const mutations = {
   [mutationTypes.TOGGLE_PLAYER_LIST](state) {
     state.showPlayerList = !state.showPlayerList;
@@ -22,4 +26,4 @@ const actions = {
     commit(mutationTypes.TOGGLE_REFRESH_HAND_CONFIRM);
   },
 };
-export default { state, mutations, actions };
+export default { state, getters, mutations, actions };
