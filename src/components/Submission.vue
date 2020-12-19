@@ -35,6 +35,7 @@ export default {
     ...mapState({
       round: (state) => state.game.round,
       isCardzar: (state) => state.player.isCardzar,
+
     }),
     ...mapGetters(['cardSubmissions']),
     submissionView() {
@@ -43,7 +44,7 @@ export default {
   },
   methods: {
     handleClick(cardId) {
-      if(this.round.ready){
+      if(this.round.ready && this.isCardzar){
         const gameId = this.$route.params.gameId.toLowerCase();
         this.$store.dispatch("selectRoundWinner", { cardId, gameId });
       }

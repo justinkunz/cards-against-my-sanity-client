@@ -1,5 +1,5 @@
-import * as mutationTypes from "../../constants/mutationTypes";
-import API from "../../api";
+import * as mutationTypes from '../../constants/mutationTypes';
+import API from '../../api';
 
 const state = {
   expansionPacks: [],
@@ -9,9 +9,10 @@ const state = {
   round: {},
   hasStarted: false,
   playerSummary: [],
+  roundWinners: {},
   blackCard: {
     id: null,
-    text: "Waiting on other players. . .",
+    text: 'Waiting on other players. . .',
   },
 };
 
@@ -24,9 +25,7 @@ const getters = {
   cardSubmissions: ({ playerSummary, round }) =>
     round.ready
       ? round.cards
-      : Object.keys(playerSummary).filter(
-          (key) => playerSummary[key].submittedCard
-        ),
+      : Object.keys(playerSummary).filter((key) => playerSummary[key].submittedCard),
   haveCardSubmissions: ({ playerSummary }) =>
     Object.keys(playerSummary).some((key) => playerSummary[key].submittedCard),
 };
@@ -39,7 +38,7 @@ const mutations = {
     state.gameId = gameId;
   },
   [mutationTypes.SET_GAME](state, game) {
-    const { blackCard, round, hasStarted } = game;
+    const { blackCard, round, hasStarted, roundWinners } = game;
 
     state.playerSummary = game.players || {};
     state.hasStarted = hasStarted;
@@ -47,6 +46,7 @@ const mutations = {
     state.blackCard = blackCard;
     state.isGameOver = game.gameOver || false;
     state.gameWinner = game.winner.winner || {};
+    state.roundWinners = roundWinners || {};
   },
 };
 
@@ -66,24 +66,24 @@ const actions = {
   async selectRoundWinner({ rootState, commit }, { gameId, cardId }) {
     if (rootState.isFetching.scoring) return;
     commit(mutationTypes.SET_FETCHING_STATUS, {
-      type: "scoring",
+      type: 'scoring',
       status: true,
     });
     await API.games.chooseWinner(gameId, cardId);
     commit(mutationTypes.SET_FETCHING_STATUS, {
-      type: "scoring",
+      type: 'scoring',
       status: false,
     });
   },
   async nextRound({ rootState, commit }, gameId) {
     if (rootState.isFetching.nextRound) return;
     commit(mutationTypes.SET_FETCHING_STATUS, {
-      type: "nextRound",
+      type: 'nextRound',
       status: true,
     });
     await API.games.nextRound(gameId);
     commit(mutationTypes.SET_FETCHING_STATUS, {
-      type: "nextRound",
+      type: 'nextRound',
       status: false,
     });
   },
@@ -97,12 +97,12 @@ const actions = {
   async skipBlackCard({ rootState, commit }, gameId) {
     if (rootState.isFetching.skipCard) return;
     commit(mutationTypes.SET_FETCHING_STATUS, {
-      type: "skipCard",
+      type: 'skipCard',
       status: true,
     });
     await API.games.skipBlackCard(gameId);
     commit(mutationTypes.SET_FETCHING_STATUS, {
-      type: "skipCard",
+      type: 'skipCard',
       status: false,
     });
   },

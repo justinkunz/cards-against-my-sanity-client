@@ -16,7 +16,7 @@
     <CurrentPlayers />
     <div class="current-card">
       <Winner v-if="isGameOver" />
-      <Card v-else cardType="black" :cardText="blackCard.text" />
+      <Card v-else cardType="black" :cardText="blackCard.text" :winningAnswer="round.winningCard && round.winningCard.text" />
       <div
         v-if="isVIP && hasStarted && !round.ready && !haveCardSubmissions"
         @click="skipBlackCard()"

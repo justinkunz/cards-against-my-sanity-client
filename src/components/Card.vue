@@ -7,7 +7,14 @@
     </md-content>
     <div v-else>
       <div :class="cardClass.container" @click="handleClick">
-        <div :class="cardClass.text">{{cardText}}</div>
+        <div :class="cardClass.text">
+          <div v-if="cardType === 'black' && winningAnswer">
+            <span>{{answerCard.preBlank}}</span>
+            <span class="card-winning-answer"> {{answerCard.answer}} </span>
+            <span>{{answerCard.postBlank}}</span>
+          </div>
+          <div v-else>{{cardText}}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -16,7 +23,7 @@
 <script>
 export default {
   name: "Card",
-  props: ["cardText", "cardType", "cardId", "shadow"],
+  props: ["cardText", "cardType", "cardId", "shadow", "winningAnswer"],
   computed: {
     cardClass() {
       const classes = {
@@ -31,6 +38,15 @@ export default {
       };
 
       return classes[this.cardType];
+    },
+    answerCard() {
+      const answerIdentifier = '______';
+      const [preBlank, postBlank] = this.cardText.split(answerIdentifier);
+      return {
+        preBlank,
+        answer: this.winningAnswer.replace('.', ''),
+        postBlank
+      }
     }
   },
   methods: {
@@ -80,5 +96,10 @@ export default {
 
 .card-text--white {
   color: black;
+}
+
+.card-winning-answer {
+  color: #d54141;
+  font-weight: 900;
 }
 </style>

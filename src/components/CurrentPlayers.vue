@@ -67,14 +67,16 @@ export default {
       round: (state) => state.game.round,
       showPlayerList: (state) => state.app.showPlayerList,
       isVIP: (state) => state.player.isVIP,
+      winners: (state) => state.game.roundWinners,
     }),
     ...mapGetters(["players"]),
     formattedPlayers() {
       let colorNum = 1;
       return this.players.map((player) => {
-        const { name, score, isCardzar, id } = player;
+        const { name, isCardzar, id } = player;
         const words = name.trim().split(" ");
 
+        const score = Object.values(this.winners).filter((winner) => winner === id).length;
         const initials =
           words.length === 1
             ? name[0].toUpperCase() + (name[1] || "").toLowerCase()
